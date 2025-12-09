@@ -7,6 +7,7 @@ import {
 } from "@opentelemetry/api";
 import { OTLPMetricExporter } from "@opentelemetry/exporter-metrics-otlp-http";
 import { OTLPTraceExporter } from "@opentelemetry/exporter-trace-otlp-http";
+import { HostMetrics } from "@opentelemetry/host-metrics";
 import { PinoInstrumentation } from "@opentelemetry/instrumentation-pino";
 import { resourceFromAttributes } from "@opentelemetry/resources";
 import { PeriodicExportingMetricReader } from "@opentelemetry/sdk-metrics";
@@ -35,12 +36,14 @@ const metricExporter = new OTLPMetricExporter({
 });
 const metricReader = new PeriodicExportingMetricReader({
   exporter: metricExporter,
-  exportIntervalMillis: 60000, // 1 minute
+  exportIntervalMillis: 15000, // 15s
 });
+
+let hostMetrics: HostMetrics | undefined;
 
 let sdk: NodeSDK;
 
-export function initTelemetry() {
+export async function initTelemetry() {
   if (sdk) {
     console.log("OpenTelemetry already initialized");
     return;
@@ -49,7 +52,7 @@ export function initTelemetry() {
   sdk = new NodeSDK({
     resource,
     traceExporter,
-    metricReader,
+    metricReaders: [metricReader],
     instrumentations: [
       new PinoInstrumentation({
         logHook: (span, record) => {
@@ -61,7 +64,19 @@ export function initTelemetry() {
     ],
   });
 
-  sdk.start();
+  await sdk.start();
+
+  // Start host metrics after the global MeterProvider is registered by the SDK.
+  hostMetrics = new HostMetrics({
+    metricGroups: [
+      "system.cpu",
+      "system.memory",
+      "system.network",
+      "process.cpu",
+      "process.memory",
+    ],
+  });
+  hostMetrics.start();
 
   console.log("OpenTelemetry initialized successfully");
   console.log(`Sending telemetry to: ${config.otlpEndpoint}`);
