@@ -3,6 +3,7 @@ import { Document } from "@langchain/core/documents";
 import { END, START, StateGraph } from "@langchain/langgraph";
 import { z } from "zod";
 import { Nodes } from "../enums/nodes.enum";
+import { withTracing } from "../utils/tracing-helper";
 import { embedStore } from "./nodes/embed-store";
 import { llmNode } from "./nodes/llm-node";
 import { retrieve } from "./nodes/retrieve";
@@ -19,11 +20,18 @@ export const DetailedGraphStateSchema = z.object({
 
 export type DetailedGraphState = z.infer<typeof DetailedGraphStateSchema>;
 
+const TracedNodes = {
+  SearchWeb: withTracing("node.search_web", searchWeb),
+  EmbedStore: withTracing("node.embed_store", embedStore),
+  Retrieve: withTracing("node.retrieve", retrieve),
+  LLM: withTracing("node.llm", llmNode),
+};
+
 export const detailedGraph = new StateGraph(DetailedGraphStateSchema)
-  .addNode(Nodes.SearchWeb, searchWeb)
-  .addNode(Nodes.EmbedStore, embedStore)
-  .addNode(Nodes.Retrieve, retrieve)
-  .addNode(Nodes.Llm, llmNode)
+  .addNode(Nodes.SearchWeb, TracedNodes.SearchWeb)
+  .addNode(Nodes.EmbedStore, TracedNodes.EmbedStore)
+  .addNode(Nodes.Retrieve, TracedNodes.Retrieve)
+  .addNode(Nodes.Llm, TracedNodes.LLM)
 
   // connect nodes
   .addEdge(START, Nodes.SearchWeb)

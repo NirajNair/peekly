@@ -6,9 +6,10 @@ import config from "./config";
 import type { QueryRequestDto, QueryResponseDto } from "./dto/query.dto";
 import { Mode } from "./enums/mode.enum";
 import type { HandlerContext } from "./types/handler-context.type";
+import { withTracing } from "./utils/tracing-helper";
 
 const queryHandler = async (
-  ctx: HandlerContext<QueryRequestDto>
+  ctx: HandlerContext<QueryRequestDto>,
 ): Promise<QueryResponseDto> => {
   const queryDto = ctx.body;
 
@@ -16,7 +17,7 @@ const queryHandler = async (
     new GoogleGenerativeAIEmbeddings({
       apiKey: config.googleApiKey,
       modelName: "gemini-embedding-001",
-    })
+    }),
   );
 
   const initialState = {
@@ -26,12 +27,20 @@ const queryHandler = async (
 
   let result: any;
   if (queryDto.mode == Mode.Quick) {
-    result = await quickGraph.invoke(initialState);
+    const runQuickGraph = withTracing("graph.quick", (state) =>
+      quickGraph.invoke(state),
+    );
+    result = runQuickGraph(initialState);
   } else {
-    result = await detailedGraph.invoke({
-      ...initialState,
-      vector_store: vectorStore,
-    });
+    const runDetailedGraph = withTracing(
+      "graph.detailed",
+      (state, vectorStore) =>
+        detailedGraph.invoke({
+          ...state,
+          vector_store: vectorStore,
+        }),
+    );
+    result = await runDetailedGraph(initialState, vectorStore);
   }
 
   return {
