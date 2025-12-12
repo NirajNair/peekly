@@ -21,7 +21,6 @@ class Config {
 
   get environment() {
     return this.get("ENVIRONMENT") as Environment;
-    
   }
 
   get tavilyApiKey() {

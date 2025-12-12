@@ -9,6 +9,6 @@ export const retrieve = async (state: DetailedGraphState) => {
     docs.length > 0
       ? docs.map((doc) => doc.pageContent).join("\n\n---\n\n")
       : "No external context found.";
-    
+
   return { context };
 };
