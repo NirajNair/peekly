@@ -2,7 +2,7 @@ import { z } from 'zod';
 import { Mode } from '../enums/mode.enum';
 
 export const QueryRequestDto = z.object({
-  mode: z.enum([Mode.Quick, Mode.Detailed]),
+  mode: z.enum(Object.values(Mode)),
   userText: z.string(),
   userPrompt: z.string(),
 });

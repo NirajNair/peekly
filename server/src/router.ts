@@ -1,10 +1,18 @@
 import Elysia from 'elysia';
-import type { QueryRequestDto } from './dto/query.dto';
+import { QueryRequestDto, QueryResponseDto } from './dto/query.dto';
 import queryHandler from './handlers';
-import type { HandlerContext } from './types/handler-context.type';
 
 const router = new Elysia()
   .get('/health', () => 'OK')
-  .post('/query', (ctx) => queryHandler(ctx as HandlerContext<QueryRequestDto>));
+  .post(
+    '/query',
+    async (ctx) => {
+      return queryHandler(ctx.body);
+    },
+    {
+      body: QueryRequestDto,
+      response: QueryResponseDto,
+    }
+  );
 
 export default router;

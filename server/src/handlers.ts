@@ -5,12 +5,9 @@ import { quickGraph } from './agent/quick-graph';
 import config from './config';
 import type { QueryRequestDto, QueryResponseDto } from './dto/query.dto';
 import { Mode } from './enums/mode.enum';
-import type { HandlerContext } from './types/handler-context.type';
 import { withTracing } from './utils/tracing-helper';
 
-const queryHandler = async (ctx: HandlerContext<QueryRequestDto>): Promise<QueryResponseDto> => {
-  const queryDto = ctx.body;
-
+const queryHandler = async (requestDto: QueryRequestDto): Promise<QueryResponseDto> => {
   const vectorStore = new MemoryVectorStore(
     new GoogleGenerativeAIEmbeddings({
       apiKey: config.googleApiKey,
@@ -19,14 +16,14 @@ const queryHandler = async (ctx: HandlerContext<QueryRequestDto>): Promise<Query
   );
 
   const initialState = {
-    user_text: queryDto.userText,
-    user_prompt: queryDto.userPrompt,
+    user_text: requestDto.userText,
+    user_prompt: requestDto.userPrompt,
   };
 
   let result: any;
-  if (queryDto.mode == Mode.Quick) {
+  if (requestDto.mode == Mode.Quick) {
     const runQuickGraph = withTracing('graph.quick', (state) => quickGraph.invoke(state));
-    result = runQuickGraph(initialState);
+    result = await runQuickGraph(initialState);
   } else {
     const runDetailedGraph = withTracing('graph.detailed', (state, vectorStore) =>
       detailedGraph.invoke({
@@ -36,7 +33,6 @@ const queryHandler = async (ctx: HandlerContext<QueryRequestDto>): Promise<Query
     );
     result = await runDetailedGraph(initialState, vectorStore);
   }
-
   return {
     response: result.response,
   };
