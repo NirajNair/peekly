@@ -1,5 +1,5 @@
-import { z } from "zod";
-import { Mode } from "../enums/mode.enum";
+import { z } from 'zod';
+import { Mode } from '../enums/mode.enum';
 
 export const QueryRequestDto = z.object({
   mode: z.enum([Mode.Quick, Mode.Detailed]),

@@ -1,6 +1,6 @@
-import { RecursiveCharacterTextSplitter } from "@langchain/textsplitters";
-import type { DetailedGraphState } from "../detailed-graph";
-import { vectorStore } from "../tools/vector-store";
+import { RecursiveCharacterTextSplitter } from '@langchain/textsplitters';
+import type { DetailedGraphState } from '../detailed-graph';
+import { vectorStore } from '../tools/vector-store';
 
 export const embedStore = async (state: DetailedGraphState) => {
   if (!state.docs) {
@@ -10,7 +10,7 @@ export const embedStore = async (state: DetailedGraphState) => {
   const splitter = new RecursiveCharacterTextSplitter({
     chunkSize: 1000,
     chunkOverlap: 200,
-    separators: ["\n\n", "\n", ". ", "! ", "? ", "; ", ", ", " ", ""],
+    separators: ['\n\n', '\n', '. ', '! ', '? ', '; ', ', ', ' ', ''],
     lengthFunction: (text: string) => text.length,
   });
 

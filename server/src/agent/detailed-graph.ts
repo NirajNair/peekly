@@ -1,13 +1,13 @@
-import { MemoryVectorStore } from "@langchain/classic/vectorstores/memory";
-import { Document } from "@langchain/core/documents";
-import { END, START, StateGraph } from "@langchain/langgraph";
-import { z } from "zod";
-import { Nodes } from "../enums/nodes.enum";
-import { withTracing } from "../utils/tracing-helper";
-import { embedStore } from "./nodes/embed-store";
-import { llmNode } from "./nodes/llm-node";
-import { retrieve } from "./nodes/retrieve";
-import { searchWeb } from "./nodes/search-web";
+import { MemoryVectorStore } from '@langchain/classic/vectorstores/memory';
+import { Document } from '@langchain/core/documents';
+import { END, START, StateGraph } from '@langchain/langgraph';
+import { z } from 'zod';
+import { Nodes } from '../enums/nodes.enum';
+import { withTracing } from '../utils/tracing-helper';
+import { embedStore } from './nodes/embed-store';
+import { llmNode } from './nodes/llm-node';
+import { retrieve } from './nodes/retrieve';
+import { searchWeb } from './nodes/search-web';
 
 export const DetailedGraphStateSchema = z.object({
   user_text: z.string(),
@@ -21,10 +21,10 @@ export const DetailedGraphStateSchema = z.object({
 export type DetailedGraphState = z.infer<typeof DetailedGraphStateSchema>;
 
 const TracedNodes = {
-  SearchWeb: withTracing("node.search_web", searchWeb),
-  EmbedStore: withTracing("node.embed_store", embedStore),
-  Retrieve: withTracing("node.retrieve", retrieve),
-  LLM: withTracing("node.llm", llmNode),
+  SearchWeb: withTracing('node.search_web', searchWeb),
+  EmbedStore: withTracing('node.embed_store', embedStore),
+  Retrieve: withTracing('node.retrieve', retrieve),
+  LLM: withTracing('node.llm', llmNode),
 };
 
 export const detailedGraph = new StateGraph(DetailedGraphStateSchema)

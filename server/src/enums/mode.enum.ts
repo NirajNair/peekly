@@ -1,4 +1,4 @@
 export enum Mode {
-  Quick = "quick",
-  Detailed = "detailed",
+  Quick = 'quick',
+  Detailed = 'detailed',
 }

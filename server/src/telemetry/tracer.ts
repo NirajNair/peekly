@@ -1,22 +1,13 @@
-import {
-  diag,
-  DiagConsoleLogger,
-  DiagLogLevel,
-  metrics,
-  trace,
-} from "@opentelemetry/api";
-import { OTLPMetricExporter } from "@opentelemetry/exporter-metrics-otlp-http";
-import { OTLPTraceExporter } from "@opentelemetry/exporter-trace-otlp-http";
-import { HostMetrics } from "@opentelemetry/host-metrics";
-import { PinoInstrumentation } from "@opentelemetry/instrumentation-pino";
-import { resourceFromAttributes } from "@opentelemetry/resources";
-import { PeriodicExportingMetricReader } from "@opentelemetry/sdk-metrics";
-import { NodeSDK } from "@opentelemetry/sdk-node";
-import {
-  ATTR_SERVICE_NAME,
-  ATTR_SERVICE_VERSION,
-} from "@opentelemetry/semantic-conventions";
-import config from "../config";
+import { diag, DiagConsoleLogger, DiagLogLevel, metrics, trace } from '@opentelemetry/api';
+import { OTLPMetricExporter } from '@opentelemetry/exporter-metrics-otlp-http';
+import { OTLPTraceExporter } from '@opentelemetry/exporter-trace-otlp-http';
+import { HostMetrics } from '@opentelemetry/host-metrics';
+import { PinoInstrumentation } from '@opentelemetry/instrumentation-pino';
+import { resourceFromAttributes } from '@opentelemetry/resources';
+import { PeriodicExportingMetricReader } from '@opentelemetry/sdk-metrics';
+import { NodeSDK } from '@opentelemetry/sdk-node';
+import { ATTR_SERVICE_NAME, ATTR_SERVICE_VERSION } from '@opentelemetry/semantic-conventions';
+import config from '../config';
 
 const resource = resourceFromAttributes({
   [ATTR_SERVICE_NAME]: config.otelServiceName,
@@ -45,7 +36,7 @@ let sdk: NodeSDK;
 
 export async function initTelemetry() {
   if (sdk) {
-    console.log("OpenTelemetry already initialized");
+    console.log('OpenTelemetry already initialized');
     return;
   }
 
@@ -56,9 +47,9 @@ export async function initTelemetry() {
     instrumentations: [
       new PinoInstrumentation({
         logHook: (span, record) => {
-          record["traceId"] = span.spanContext().traceId;
-          record["spanId"] = span.spanContext().spanId;
-          record["traceFlags"] = span.spanContext().traceFlags;
+          record['traceId'] = span.spanContext().traceId;
+          record['spanId'] = span.spanContext().spanId;
+          record['traceFlags'] = span.spanContext().traceFlags;
         },
       }),
     ],
@@ -69,26 +60,24 @@ export async function initTelemetry() {
   // Start host metrics after the global MeterProvider is registered by the SDK.
   hostMetrics = new HostMetrics({
     metricGroups: [
-      "system.cpu",
-      "system.memory",
-      "system.network",
-      "process.cpu",
-      "process.memory",
+      'system.cpu',
+      'system.memory',
+      'system.network',
+      'process.cpu',
+      'process.memory',
     ],
   });
   hostMetrics.start();
 
-  console.log("OpenTelemetry initialized successfully");
+  console.log('OpenTelemetry initialized successfully');
   console.log(`Sending telemetry to: ${config.otlpEndpoint}`);
 
   // Handle graceful shutdown
-  process.on("SIGTERM", () => {
+  process.on('SIGTERM', () => {
     sdk
       ?.shutdown()
-      .then(() => console.log("OpenTelemetry shut down successfully"))
-      .catch((error) =>
-        console.error("Error shutting down OpenTelemetry", error)
-      )
+      .then(() => console.log('OpenTelemetry shut down successfully'))
+      .catch((error) => console.error('Error shutting down OpenTelemetry', error))
       .finally(() => process.exit(0));
   });
 }

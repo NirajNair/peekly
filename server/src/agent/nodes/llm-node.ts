@@ -1,7 +1,7 @@
-import { HumanMessage, SystemMessage } from "@langchain/core/messages";
-import type { DetailedGraphState } from "../detailed-graph";
-import type { QuickGraphState } from "../quick-graph";
-import { llm } from "../tools/llm";
+import { HumanMessage, SystemMessage } from '@langchain/core/messages';
+import type { DetailedGraphState } from '../detailed-graph';
+import type { QuickGraphState } from '../quick-graph';
+import { llm } from '../tools/llm';
 
 export const llmNode = async (state: DetailedGraphState | QuickGraphState) => {
   const response = await llm.invoke([
@@ -17,9 +17,7 @@ export const llmNode = async (state: DetailedGraphState | QuickGraphState) => {
       `User's selected text : ${state.user_text} \n User's prompt : ${
         state.user_prompt
       } \n Context : ${
-        "context" in state && state.context
-          ? state.context
-          : "No context provided."
+        'context' in state && state.context ? state.context : 'No context provided.'
       }`
     ),
   ]);

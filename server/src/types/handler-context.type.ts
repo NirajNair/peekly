@@ -1,4 +1,4 @@
-import type { Context } from "elysia";
+import type { Context } from 'elysia';
 
 export type HandlerContext<TBody = unknown> = Context & {
   body: TBody;

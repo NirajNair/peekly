@@ -1,6 +1,6 @@
-import { Document } from "@langchain/core/documents";
-import type { DetailedGraphState } from "../detailed-graph";
-import tavilySearchTool from "../tools/tavily-search";
+import { Document } from '@langchain/core/documents';
+import type { DetailedGraphState } from '../detailed-graph';
+import tavilySearchTool from '../tools/tavily-search';
 
 export const searchWeb = async (state: DetailedGraphState) => {
   const webSearchResults = await tavilySearchTool.invoke({
