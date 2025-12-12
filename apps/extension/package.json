@@ -9,9 +9,17 @@
     "preview": "vite preview",
     "check": "svelte-check --tsconfig ./tsconfig.app.json && tsc -p tsconfig.node.json"
   },
+  "dependencies": {
+    "@floating-ui/dom": "^1.7.4",
+    "dom-anchor-text-position": "^5.0.0",
+    "dom-anchor-text-quote": "^4.0.2",
+    "dompurify": "^3.3.1",
+    "marked": "^17.0.1"
+  },
   "devDependencies": {
     "@sveltejs/vite-plugin-svelte": "^6.2.1",
     "@tsconfig/svelte": "^5.0.6",
+    "@types/chrome": "^0.1.32",
     "@types/node": "^24.10.1",
     "svelte": "^5.43.8",
     "svelte-check": "^4.3.4",
