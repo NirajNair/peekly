@@ -36,6 +36,7 @@
     "elysia": "latest",
     "pino": "^10.1.0",
     "pino-opentelemetry-transport": "^2.0.0",
+    "tiktoken": "^1.0.22",
     "zod": "^4.1.13"
   },
   "devDependencies": {

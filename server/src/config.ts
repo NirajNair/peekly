@@ -46,6 +46,18 @@ class Config {
   get otelServiceVersion() {
     return this.get('OTEL_SERVICE_VERSION');
   }
+
+  get llmName() {
+    return this.get('LLM_NAME');
+  }
+
+  get llmContextWindow() {
+    return this.getNumber('LLM_CONTEXT_WINDOW');
+  }
+
+  get llmTokenEncoder() {
+    return this.get('LLM_TOKEN_ENCODER');
+  }
 }
 
 export default new Config();

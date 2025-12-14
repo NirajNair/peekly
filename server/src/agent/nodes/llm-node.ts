@@ -1,26 +1,34 @@
-import { HumanMessage, SystemMessage } from '@langchain/core/messages';
+import { InternalServerError } from 'elysia';
+import { Nodes } from '../../enums/nodes.enum';
+import { circuitBreaker } from '../../utils/circuit-breaker';
+import { logger } from '../../utils/logger';
+import { retryWithDelay } from '../../utils/retry';
 import type { DetailedGraphState } from '../detailed-graph';
+import { buildLLMMessages } from '../prompts/prompt-builder';
 import type { QuickGraphState } from '../quick-graph';
 import { llm } from '../tools/llm';
 
 export const llmNode = async (state: DetailedGraphState | QuickGraphState) => {
-  const response = await llm.invoke([
-    new SystemMessage(`
-        You are a helpful assistant that can answer questions and provide information.
-        You are given text selected by the user and a user's prompt which explains what the user wants you to do with the selected text.
-        You are also given a context of external information, if context is not provided then use your own knowledge in the best capacity to answer the user's prompt.
-        Your job is to use the selected text and the context to provide the most accurate answer possible.
-        When uncertain, state the uncertainty clearly.
-        Keep the answer consice and to the point in under 100 words strictly.
-    `),
-    new HumanMessage(
-      `User's selected text : ${state.user_text} \n User's prompt : ${
-        state.user_prompt
-      } \n Context : ${
-        'context' in state && state.context ? state.context : 'No context provided.'
-      }`
-    ),
-  ]);
+  if (circuitBreaker.shouldSkip(Nodes.LLM)) {
+    throw new InternalServerError('Uh-oh! Something went wrong on our end. Please try again soon.');
+  }
 
-  return { response: response.content };
+  try {
+    const response = await retryWithDelay(() => llm.invoke(buildLLMMessages(state)), {
+      maxRetries: 3,
+      delayMs: 1000,
+      operationName: 'LLM',
+    });
+
+    logger.info('LLM generation successful');
+    return { response: response.content };
+  } catch (error: any) {
+    logger.error(
+      {
+        error: error instanceof Error ? error.message : String(error),
+      },
+      'LLM generation failed after retries'
+    );
+    throw new InternalServerError('Uh-oh! Something went wrong on our end. Please try again soon.');
+  }
 };

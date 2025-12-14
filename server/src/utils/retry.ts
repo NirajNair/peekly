@@ -20,7 +20,7 @@ export async function retryWithDelay<T>(
 
       logger.warn(
         { error: lastError.message },
-        `${options.operationName} failed (attempt ${retryAttempt}/${options.maxRetries}), retrying in ${options.delayMs}s...`
+        `${options.operationName} failed (attempt ${retryAttempt}/${options.maxRetries}), retrying in ${options.delayMs}ms...`
       );
 
       await new Promise((resolve) => setTimeout(resolve, options.delayMs));

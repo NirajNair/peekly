@@ -44,7 +44,6 @@ function handleError(error: any, code: string | number, set: any) {
 
 function getHttpStatusCode(code: string | number): number {
   switch (code) {
-    case 'VALIDATION':
     case 'INVALID_COOKIE_SIGNATURE':
       return 401;
     case 'UNKNOWN':
@@ -52,6 +51,7 @@ function getHttpStatusCode(code: string | number): number {
       return 500;
     case 'PARSE':
     case 'INVALID_FILE_TYPE':
+    case 'VALIDATION':
       return 400;
     case 'NOT_FOUND':
       return 404;

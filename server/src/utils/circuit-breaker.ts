@@ -50,8 +50,10 @@ class CircuitBreaker {
   }
 
   recordSuccess(serviceName: string) {
-    this.circuits.delete(serviceName);
-    logger.info(`Circuit breaker RESET for ${serviceName} after success`);
+    if (this.circuits.has(serviceName)) {
+      this.circuits.delete(serviceName);
+      logger.info(`Circuit breaker RESET for ${serviceName} after success`);
+    }
   }
 }
 
