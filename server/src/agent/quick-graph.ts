@@ -13,8 +13,8 @@ export const QuickGraphStateSchema = z.object({
 export type QuickGraphState = z.infer<typeof QuickGraphStateSchema>;
 
 export const quickGraph = new StateGraph(QuickGraphStateSchema)
-  .addNode(Nodes.Llm, withTracing('node.llm_node', llmNode))
+  .addNode(Nodes.LLM, withTracing('node.llm_node', llmNode))
   // connect nodes
-  .addEdge(START, Nodes.Llm)
-  .addEdge(Nodes.Llm, END)
+  .addEdge(START, Nodes.LLM)
+  .addEdge(Nodes.LLM, END)
   .compile();

@@ -16,6 +16,9 @@ export const DetailedGraphStateSchema = z.object({
   vector_store: z.instanceof(MemoryVectorStore),
   context: z.string().optional(),
   response: z.string().optional(),
+  // Error tracking in nodes
+  webSearchFailed: z.boolean().optional(),
+  embedStoreFailed: z.boolean().optional(),
 });
 
 export type DetailedGraphState = z.infer<typeof DetailedGraphStateSchema>;
@@ -31,12 +34,19 @@ export const detailedGraph = new StateGraph(DetailedGraphStateSchema)
   .addNode(Nodes.SearchWeb, TracedNodes.SearchWeb)
   .addNode(Nodes.EmbedStore, TracedNodes.EmbedStore)
   .addNode(Nodes.Retrieve, TracedNodes.Retrieve)
-  .addNode(Nodes.Llm, TracedNodes.LLM)
+  .addNode(Nodes.LLM, TracedNodes.LLM)
 
   // connect nodes
   .addEdge(START, Nodes.SearchWeb)
-  .addEdge(Nodes.SearchWeb, Nodes.EmbedStore)
+  .addConditionalEdges(
+    Nodes.SearchWeb,
+    (state) => (state.webSearchFailed ? Nodes.LLM : Nodes.EmbedStore),
+    {
+      [Nodes.LLM]: Nodes.LLM,
+      [Nodes.EmbedStore]: Nodes.EmbedStore,
+    }
+  )
   .addEdge(Nodes.EmbedStore, Nodes.Retrieve)
-  .addEdge(Nodes.Retrieve, Nodes.Llm)
-  .addEdge(Nodes.Llm, END)
+  .addEdge(Nodes.Retrieve, Nodes.LLM)
+  .addEdge(Nodes.LLM, END)
   .compile();
