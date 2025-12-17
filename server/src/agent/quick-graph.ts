@@ -1,6 +1,6 @@
 import { END, START, StateGraph } from '@langchain/langgraph';
 import { z } from 'zod';
-import { Nodes } from '../enums/nodes.enum';
+import { Nodes } from '../../../shared/enums/nodes.enum';
 import { withTracing } from '../utils/tracing-helper';
 import { llmNode } from './nodes/llm-node';
 

@@ -2,7 +2,7 @@ import { MemoryVectorStore } from '@langchain/classic/vectorstores/memory';
 import { Document } from '@langchain/core/documents';
 import { END, START, StateGraph } from '@langchain/langgraph';
 import { z } from 'zod';
-import { Nodes } from '../enums/nodes.enum';
+import { Nodes } from '../../../shared/enums/nodes.enum';
 import { withTracing } from '../utils/tracing-helper';
 import { embedStore } from './nodes/embed-store';
 import { llmNode } from './nodes/llm-node';

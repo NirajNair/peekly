@@ -1,0 +1,11 @@
+{
+  "name": "@peekly/shared",
+  "version": "1.0.0",
+  "type": "module",
+  "main": "./index.ts",
+  "exports": {
+    ".": "./index.ts",
+    "./dto": "./dto/query.dto.ts",
+    "./enums": "./enums/mode.enum.ts"
+  }
+}

@@ -1,5 +1,5 @@
 import Elysia from 'elysia';
-import { QueryRequestDto, QueryResponseDto } from './dto/query.dto';
+import { QueryRequestDto, QueryResponseDto } from '../../shared/dto/query.dto';
 import queryHandler from './handlers';
 
 const router = new Elysia()

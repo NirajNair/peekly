@@ -1,10 +1,10 @@
 import { MemoryVectorStore } from '@langchain/classic/vectorstores/memory';
 import { GoogleGenerativeAIEmbeddings } from '@langchain/google-genai';
+import type { QueryRequestDto, QueryResponseDto } from '../../shared/dto/query.dto';
+import { Mode } from '../../shared/enums/mode.enum';
 import { detailedGraph } from './agent/detailed-graph';
 import { quickGraph } from './agent/quick-graph';
 import config from './config';
-import type { QueryRequestDto, QueryResponseDto } from './dto/query.dto';
-import { Mode } from './enums/mode.enum';
 import { withTracing } from './utils/tracing-helper';
 
 const queryHandler = async (requestDto: QueryRequestDto): Promise<QueryResponseDto> => {

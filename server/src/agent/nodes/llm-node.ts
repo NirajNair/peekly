@@ -1,5 +1,5 @@
 import { InternalServerError } from 'elysia';
-import { Nodes } from '../../enums/nodes.enum';
+import { Nodes } from '../../../../shared/enums/nodes.enum';
 import { circuitBreaker } from '../../utils/circuit-breaker';
 import { logger } from '../../utils/logger';
 import { retryWithDelay } from '../../utils/retry';

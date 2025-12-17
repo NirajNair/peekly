@@ -1,5 +1,5 @@
 import * as dotenv from 'dotenv';
-import { Environment } from './enums/env.enum';
+import { Environment } from '../../shared/enums/env.enum';
 
 class Config {
   constructor() {

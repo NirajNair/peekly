@@ -1,7 +1,7 @@
 import { context, trace } from '@opentelemetry/api';
 import { Logger, pino } from 'pino';
 import config from '../config';
-import { Environment } from '../enums/env.enum';
+import { Environment } from '../../../shared/enums/env.enum';
 
 class ContextLogger {
   private pinoLogger: Logger;
