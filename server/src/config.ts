@@ -23,6 +23,10 @@ class Config {
     return this.get('ENVIRONMENT') as Environment;
   }
 
+  get supabaseConfig() {
+    return { url: this.get('SUPABASE_URL'), apiKey: this.get('SUPABASE_API_KEY') };
+  }
+
   get tavilyApiKey() {
     return this.get('TAVILY_API_KEY');
   }
@@ -57,6 +61,13 @@ class Config {
 
   get llmTokenEncoder() {
     return this.get('LLM_TOKEN_ENCODER');
+  }
+
+  get googleSignInConfig() {
+    return {
+      clientId: this.get('GOOGLE_CLIENT_ID'),
+      clientSecret: this.get('GOOGLE_CLIENT_SECRET'),
+    };
   }
 }
 
