@@ -1,5 +1,7 @@
 import { opentelemetry } from '@elysiajs/opentelemetry';
-import { Elysia } from 'elysia';
+import { Context, Elysia } from 'elysia';
+import { auth } from './lib/auth';
+import { verifySmtpConnection } from './lib/mailer';
 import router from './router';
 import { initTelemetry } from './telemetry/tracer';
 
@@ -8,11 +10,30 @@ await initTelemetry();
 
 const { logger } = await import('./utils/logger');
 
+// Verify SMTP connection on startup
+try {
+  await verifySmtpConnection();
+} catch (error) {
+  process.exit(1);
+}
+
+// Boilerplate better-auth
+const betterAuthView = (context: Context) => {
+  const BETTER_AUTH_ACCEPT_METHODS = ['POST', 'GET'];
+  // validate request method
+  if (BETTER_AUTH_ACCEPT_METHODS.includes(context.request.method)) {
+    return auth.handler(context.request);
+  } else {
+    context.set.status = 405;
+  }
+};
+
 const app = new Elysia()
   .use(opentelemetry())
   .onError(({ error, code, set }) => {
     handleError(error, code, set);
   })
+  .all('/api/auth/*', betterAuthView)
   .use(router)
   .listen(3000);
 

@@ -23,6 +23,10 @@ class Config {
     return this.get('ENVIRONMENT') as Environment;
   }
 
+  get databaseUrl() {
+    return this.get('DATABASE_URL');
+  }
+
   get tavilyApiKey() {
     return this.get('TAVILY_API_KEY');
   }
@@ -57,6 +61,24 @@ class Config {
 
   get llmTokenEncoder() {
     return this.get('LLM_TOKEN_ENCODER');
+  }
+
+  get googleOAuthConfig() {
+    return {
+      clientId: this.get('GOOGLE_OAUTH_CLIENT_ID'),
+      clientSecret: this.get('GOOGLE_OAUTH_CLIENT_SECRET'),
+    };
+  }
+
+  get smtpConfig() {
+    return {
+      host: this.get('SMTP_HOST'),
+      port: this.getNumber('SMTP_PORT'),
+      auth: {
+        user: this.get('SMTP_USER'),
+        pass: this.get('SMTP_PASS'),
+      },
+    };
   }
 }
 
